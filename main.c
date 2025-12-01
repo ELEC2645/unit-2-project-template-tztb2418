@@ -8,16 +8,19 @@
 void clear_screen(void);
 void move_cursor(int x, int y);
 void draw_sin(int width, int height, int offset, const char* mark);
+void draw_crosshairs(int height, int width);
 
 
 int main() {
     
-    int width = 128, height = 24;       // width and height of frame
+    int width = 128, height = 26;       // width and height of frame
     
-    for(int i=0; i<1000; i++){
+    for(int i=0; i<200; i++){
         clear_screen();
         printf("\n\n");                     // spacing for tideness
 
+        draw_crosshairs(width, height);
+            
         draw_sin(width, height, i, "o");
             
         fflush(stdout);  // Force output
@@ -57,9 +60,29 @@ void draw_sin(int width, int height, int offset, const char* mark){
     int y = 0;
     for(int i = 0; i < width; i++) {
         fx = (float)(i + offset) *  radwi;
-        fy = sin(fx) * (flhi / 2) + zeroy;
+        fy = sin(fx) * (flhi / 2.4) + zeroy;
         y = (int)round(fy);
         move_cursor(i,y);
         printf("%s",mark);
     }
+}
+
+void draw_crosshairs(int width, int height){
+
+    for(int j=0; j<=height; j++){
+            move_cursor(width/2, j);
+            printf("|");
+        }
+
+        for(int j=0; j<=width; j++){
+
+            if(j == width/2){
+                move_cursor(j, height/2);
+                printf("+");
+            }
+            else{
+                move_cursor(j, height/2);
+                printf("-");
+            }
+        }
 }
