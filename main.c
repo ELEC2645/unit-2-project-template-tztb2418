@@ -14,10 +14,11 @@ void move_cursor(int x, int y);
 void draw_sin(int offset);
 void draw_crosshairs(void);
 void animate_sin(void);
-void get_amp_freq(void);
 // User input
 int user_input(char *sel_buf, size_t sel_buf_sz);
 void flush_input_buffer(void);
+void get_amp(void);
+void get_freq(void);
 // print/ disply
 void print_home_screen(void);
 void print_main_menu(void);
@@ -27,18 +28,21 @@ void soz(void);
 void main_menu(void);
 void select_menu_item(char *sel_buf);
 
-//  ---  Global varibles  ---  //
+// ---  Constants  ---  //
 
-int width = 128, height = 28;       // width and height of frame, height must be even
-int time = 200;
+const int width = 128; 
+const int height = 28;       // width and height of frame, height must be even
+const int time = 200;
 
-int amplitude;
-int frequency;
-float amp;
-float freq;
+float widthf = (float)width;
+float heightf = (float)height;
 
 const char mark = 'o';
 
+//  ---  Global varibles  ---  //
+
+float amp;
+float freq;
 // string input buffers
 char sel_buf[20];
 char amp_buf[4];
@@ -47,7 +51,6 @@ char *endptr;
 
 int main() {
 
-    
     print_home_screen();
     if(user_input(sel_buf, sizeof(sel_buf))){
        exit; 
@@ -58,7 +61,7 @@ int main() {
     else {
         exit;
     }
-  
+    
     return 0;
 }
 
@@ -78,22 +81,23 @@ void move_cursor(int x, int y) {
 void draw_sin(int offset){
     
     // float for sine calculation
-    float zeroy = (float)(height/2) +1;
-    float flwi = (float)width;
-    float flhi = (float)height * amp / 2.0;
-    float radwi = 2*PI/flwi;
-    float radhi = flhi/(2*PI);
+    float zeroy = heightf / 2.0;
+    float flhi = (heightf / 2.0) * amp;
+    float per = widthf / freq;
 
     // draw sine wave
-    float fx = 0.0;
-    float fy = 0.0;
-    int y = 0;
     for(int i = 0; i < width; i++) {
-        fx = (float)(i + offset) *  radwi;
-        fy = sin(fx * freq) * flhi + zeroy;
-        y = (int)round(fy);
-        move_cursor(i,y);
-        printf("%c",mark);
+        float fx = (float)(i + offset);
+        float xrad = (2.0 * PI * freq * fx) / widthf;
+        float sinval = sin(xrad);
+        float fy = zeroy - (sinval * flhi);
+        int y = (int)round(fy);
+        // boundary checking
+        if (y < 1) y = 1;
+        if (y > height) y = height;
+
+        move_cursor(i + 1, y);
+        printf("%c", mark);
     }
 }
 
@@ -133,17 +137,6 @@ void animate_sin(void){
         
     }
     move_cursor(0,height+2);  // moving cursor to end point
-}
-
-void get_amp_freq(void){
-
-    printf("\nInput a amplitude between 1 and 100: ");
-    scanf("%d", &amplitude);
-    printf("Input an frequency between 1 and 6: ");
-    scanf("%d", &frequency);
-
-    amp = (float)amplitude/ 100.0;
-    freq = (float)frequency;
 }
 
 // User input
@@ -201,7 +194,7 @@ void print_home_screen(void){
 }
 
 void print_main_menu(void) {
-    printf("\n----------- Wave Form Menu -----------\n");
+    printf("\n--------- Wave Form Menu ---------\n");
     printf("|\tSine\t\t\t|\n");
     printf("|\tSquare\t\t\t|\n");
     printf("|\tSaw Tooth\t\t|\n");
