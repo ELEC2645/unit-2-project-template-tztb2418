@@ -81,22 +81,19 @@ void move_cursor(int x, int y) {
 void draw_sin(int offset){
     
     // float for sine calculation
-    float zeroy = heightf / 2.0;
+    float sav =  2.0 * PI * freq / widthf;
+    float zeroy = heightf / 2.0 + 1.0;
     float flhi = (heightf / 2.0) * amp;
     float per = widthf / freq;
 
     // draw sine wave
     for(int i = 0; i < width; i++) {
         float fx = (float)(i + offset);
-        float xrad = (2.0 * PI * freq * fx) / widthf;
-        float sinval = sin(xrad);
-        float fy = zeroy - (sinval * flhi);
+        float sinval = sin(sav * fx);
+        float fy = zeroy + (sinval * flhi);
         int y = (int)round(fy);
-        // boundary checking
-        if (y < 1) y = 1;
-        if (y > height) y = height;
-
-        move_cursor(i + 1, y);
+        
+        move_cursor(i, y);
         printf("%c", mark);
     }
 }
@@ -176,13 +173,17 @@ void flush_input_buffer(void) {
 void get_amp(void){
     printf("\nPlease enter a amplitude between 1 and 100:");
     user_input(amp_buf, sizeof(amp_buf));
-    amp = strtof(amp_buf, &endptr);
+    amp = strtof(amp_buf, &endptr) / 100.0;
+    if(amp < 0) {amp = 0.0;}
+    if(amp > 1){amp = 1;}
 }
 
 void get_freq(void){
     printf("\nPlease enter a frequency between 1 and 8:");
     user_input(freq_buf, sizeof(amp_buf));
     freq = strtof(freq_buf, &endptr);
+    if(freq < 0) {freq = 0.0;}
+    if(freq > 8){freq = 8;}
 }
 
 // print/ disply
@@ -216,8 +217,6 @@ void soz(void){
 void main_menu() {
     print_main_menu();
     if(!user_input(sel_buf, sizeof(sel_buf))){
-        get_amp();
-        get_freq();
         select_menu_item(sel_buf);
     }
     
@@ -226,6 +225,8 @@ void main_menu() {
 void select_menu_item(char *sel_buf) {
 
     if(strcmp(sel_buf, "sine") == 0) {
+        get_amp();
+        get_freq();
         animate_sin();  
     }
     else if(strcmp(sel_buf, "square") == 0) {
