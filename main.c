@@ -1,3 +1,5 @@
+// please read the readme file
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -14,6 +16,8 @@ void move_cursor(int x, int y);
 void draw_sin(int offset);
 void draw_crosshairs(void);
 void animate_sin(void);
+void draw_saw(int offset);
+void animate_saw(void);
 // User input
 int user_input(char *sel_buf, size_t sel_buf_sz);
 void flush_input_buffer(void);
@@ -67,7 +71,7 @@ int main() {
 
 //  ---   Functions def  ---   //
 
-// Operational - (sine)
+// Operational
 
 void clear_screen(void) {
     printf("\033[2J");    // clear output
@@ -134,6 +138,53 @@ void animate_sin(void){
         
     }
     move_cursor(0,height+2);  // moving cursor to end point
+}
+
+void draw_saw(int offset){
+    
+    int y = 0;
+    int x = 0;
+    for(int i=0; i < width; i++){
+        if(offset > width){
+            offset = offset - width;
+        }
+        if(i + offset > width){
+            x = i + offset - width;
+        }
+        else{
+            x = i + offset;
+        }
+        if(y < height){
+            y++;
+        }
+        else{
+            y = 0;
+            for(int j=0; j < height; j++){
+                move_cursor(x, j);
+                printf("|");
+            }
+        }
+        move_cursor(x, y);
+        printf("\\");
+    }
+    
+}
+
+void animate_saw(void){
+    for(int i=0; i<time; i++){
+        
+        clear_screen();
+        printf("\n\n");                     // spacing for tideness
+        draw_crosshairs();
+        draw_saw(i);
+        printf("\n\n");                   // spacing for tideness
+        
+        fflush(stdout);  // Force output
+        usleep(100000);  // 100ms delay
+        move_cursor(0,height);              // returning cursor to start point
+        
+    }
+    move_cursor(0,height+2);
 }
 
 // User input
@@ -227,24 +278,30 @@ void select_menu_item(char *sel_buf) {
     if(strcmp(sel_buf, "sine") == 0) {
         get_amp();
         get_freq();
-        animate_sin();  
+        animate_sin();
+        main_menu();  
     }
     else if(strcmp(sel_buf, "square") == 0) {
         soz();
+        main_menu();  
     }
-    else if(strcmp(sel_buf, "saw tooth") == 0) {
-        soz();
+    else if(strcmp(sel_buf, "saw") == 0) {
+        animate_saw();
+        main_menu();
     }
-    else if(strcmp(sel_buf, "inverse saw tooth") == 0) {
+    else if(strcmp(sel_buf, "inverse saw") == 0) {
         soz();
+        main_menu();
     }
     else if(strcmp(sel_buf, "triangle") == 0) {
         soz();
+        main_menu();
     }
     else if(strcmp(sel_buf, "exit") == 0){
         exit;
     }
     else {
         printf("Invalid input: %s\n", sel_buf);
+        main_menu();
     }
 }
