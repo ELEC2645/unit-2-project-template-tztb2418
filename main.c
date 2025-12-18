@@ -260,7 +260,6 @@ void print_main_menu(void) {
 
 void soz(void){
     printf("\nSorry, this waveform is yet to be developed.");
-    printf("\nPlease enter m for Wave Form Menu");
 }
 
 // Program navigation
