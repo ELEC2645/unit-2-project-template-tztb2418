@@ -2,7 +2,7 @@
 # ELEC2645 Unit 2 Personal Project 
 James Clothier: tztb2418, 201911998
 
-this is a waveform animator to be used as an eductional tool to teach people the effect of changing amplitude and frequency on different waveforms. at the moment only the sine is finished and the saw displays a wave but can not be changed by amplitude and frquency setting. please input an "m" after the welcome screen is shown for the main menu and then input either "sine","saw","inverse saw","square","triangle" or "exit". after selecting "sine" youl be asked to input amplitude and frequency, please do so according to the prompt. A corresponding sine wave will be animated with your settings. Please make sure the terminal window is wide enough to see the full output.
+this is a waveform animator to be used as an educational tool to teach people the effect of changing amplitude and frequency on different waveforms. at the moment only the sine is finished and the saw displays a wave but can not be changed by amplitude and frequency setting. please input an "m" after the welcome screen is shown for the main menu and then input either "sine","saw","inverse saw","square","triangle" or "exit". after selecting "sine" youl be asked to input amplitude and frequency, please do so according to the prompt. A corresponding sine wave will be animated with your settings. Please make sure the terminal window is wide enough to see the full output.
 
 # Run code
 
